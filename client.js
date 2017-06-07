@@ -19,6 +19,7 @@ var debug = require('debug')('shopify-client');
 // Utility function to get a particular property, used with .then()
 function accessProperty(property) {
     return function (object) {
+        console.log(object, "little object")
         if (!Object.prototype.hasOwnProperty.call(object, property)) {
             throw new Error(`No such property to access: ${property}, only: ${Object.keys(object)}`);
         }
@@ -62,7 +63,9 @@ module.exports = class ShopifyClient {
 
         return got(url, requestOptions)
             .then(response => {
-                console.log(response.body);
+                //console.log(response.requestUrl, "the response request");
+                debug(response.requestUrl);
+                return response.body
                 //=> '<!doctype html> ...'
             })
             .catch(error => {
