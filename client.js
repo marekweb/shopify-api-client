@@ -83,7 +83,10 @@ module.exports = class ShopifyClient {
     }
 
     getShop() {
-        return this.makeRequest('get', 'shop.json').then(accessProperty('shop'));
+        return this.makeRequest('get', 'shop.json').then(accessProperty('shop')).catch(error => {
+            console.log(error);
+            //=> 'Internal server error ...'
+        });
     }
 
 
