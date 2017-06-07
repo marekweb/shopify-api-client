@@ -28,7 +28,7 @@ function accessProperty(property) {
 
 module.exports = class ShopifyClient {
     constructor(options) {
-        CheckOptions(options, 'hostname', 'accessToken');
+        CheckOptions(options, ['hostname', 'accessToken']);
 
         let { hostname, accessToken } = options;
 
