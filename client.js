@@ -9,9 +9,10 @@
 
 'use strict';
 
-var request = require('request-promise');
+
 var Promise = require('bluebird');
-var required = require('required-fields');
+const got = require('got');
+var CheckOptions = require('check-options');
 
 var debug = require('debug')('shopify-client');
 
@@ -27,7 +28,7 @@ function accessProperty(property) {
 
 module.exports = class ShopifyClient {
     constructor(options) {
-        required(options, 'hostname', 'accessToken');
+        CheckOptions(options, 'hostname', 'accessToken');
 
         let { hostname, accessToken } = options;
 
@@ -44,7 +45,7 @@ module.exports = class ShopifyClient {
 
         var requestOptions = {
             method: method,
-            url: url,
+            //url: url,
             headers: {
                 'Content-Type': 'application/json',
                 'X-Shopify-Access-Token': this.accessToken
@@ -59,21 +60,32 @@ module.exports = class ShopifyClient {
             requestOptions.qs = data;
         }
 
-        return request(requestOptions).then(response => {
-            // debug(response.request.uri.href);
+        return got(url, requestOptions)
+            .then(response => {
+                console.log(response.body);
+                //=> '<!doctype html> ...'
+            })
+            .catch(error => {
+                console.log(error.response.body);
+                //=> 'Internal server error ...'
+            });
 
-            var callLimit = response.headers['x-shopify-shop-api-call-limit'];
-            if (callLimit) {
-                callLimit = parseInt(callLimit.split('/'));
-            }
-            debug('Call Limit: ' + callLimit);
-            return response.body;
-        });
+        //return request(requestOptions).then(response => {
+        //    // debug(response.request.uri.href);
+
+        //    var callLimit = response.headers['x-shopify-shop-api-call-limit'];
+        //    if (callLimit) {
+        //        callLimit = parseInt(callLimit.split('/'));
+        //    }
+        //    debug('Call Limit: ' + callLimit);
+        //    return response.body;
+        //});
     }
 
     getShop() {
         return this.makeRequest('get', 'shop.json').then(accessProperty('shop'));
     }
+
 
     getProducts(options) {
         return this.makeRequest('get', 'products.json', options).then(accessProperty('products'));

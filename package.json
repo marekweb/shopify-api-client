@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/marekweb/shopify-api-client/issues"
   },
-  "homepage": "https://github.com/marekweb/shopify-api-client#readme"
+  "homepage": "https://github.com/marekweb/shopify-api-client#readme",
+  "dependencies": {
+    "bluebird": "^3.5.0",
+    "check-options": "^1.1.0",
+    "debug": "^2.6.8",
+    "got": "^7.0.0"
+  }
 }
