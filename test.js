@@ -20,4 +20,4 @@ function multipleShopifyCalls(numberOfCalls) {
     }
 }
 
-multipleShopifyCalls(10);
+multipleShopifyCalls(41);

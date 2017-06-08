@@ -45,6 +45,10 @@ module.exports = class ShopifyClient {
 
         debug(`${method} ${url}`);
 
+
+        //amount of milliseconds to delay promise chain
+        var delayMilliSecs = 0;
+
         var requestOptions = {
             method: method,
             //url: url,
@@ -61,20 +65,9 @@ module.exports = class ShopifyClient {
         } else {
             requestOptions.qs = data;
         }
-
-        function delay(t) {
-            return new Promise(function (resolve) {
-                setTimeout(resolve, t)
-            });
-        }
-
-        //amount of milliseconds to delay promise chain
-        var delayMilliSecs = 0;
-
-        Promise.delay(0)
-            .then(() => {
-                return got(url, requestOptions)
-            })
+       
+        
+       return got(url, requestOptions)
             .then(response => {
                 //console.log(response.body, "the got response")
                 debug(response.requestUrl);
@@ -88,25 +81,22 @@ module.exports = class ShopifyClient {
                     callLimit = parseInt(callLimit.split('/'));
 
                     if (callLimit >= 40) {
-                        delayMilliSecs = Math.floor(Math.random() * (2000 - 500 + 1) + 500);
+                        delayMilliSecs = 500;
                     }
                 }
 
                 debug('Call Limit: ' + callLimit);
                 console.log(callLimit, delayMilliSecs)
 
-
-                return response.body;
+                return Promise.delay(delayMilliSecs).then(() => { return response.body})
 
             })
-            .delay(delayMilliSecs)
             .then(res => {
                 //console.log(res, "response")
                 return res;
             })
-            .catch(error => {
-                console.log(error.response.body)
-            });
+            
+            
 
 
         
@@ -123,13 +113,28 @@ module.exports = class ShopifyClient {
         //});
     }
 
+    makeRequestWithRetry(method, path, data = {}) {
+        // Create a function that we can call recursively
+        var that = this;
+        //console.log(this.makeRequest)
+        function tryRequest() {
+            
+            //console.log(that.makeRequest)
+            return that.makeRequest(method, path, data = {}).catch(err => {
+                if (err.response.statusCode === 429) {
+                    return Promise.delay(500).then(tryRequest);
+                }
+                throw err; // If it's not 429 then propagate the error
+            });
+        }
+
+        // Start the attempt
+        return tryRequest();
+    }
     
 
     getShop() {
-        return this.makeRequest('get', 'shop.json')//.then(accessProperty('shop')).catch(error => {
-        //    console.log(error);
-        //    //=> 'Internal server error ...'
-        //});
+        return this.makeRequestWithRetry('get', 'shop.json')//.then(accessProperty('shop')).catch(error => {console.log(error);});
     }
 
 
