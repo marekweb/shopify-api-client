@@ -134,7 +134,7 @@ module.exports = class ShopifyClient {
     
 
     getShop() {
-        return this.makeRequestWithRetry('get', 'shop.json')//.then(accessProperty('shop')).catch(error => {console.log(error);});
+        return this.makeRequestWithRetry('get', 'shop.json').then(accessProperty('shop')).catch(error => {console.log(error);});
     }
 
 
