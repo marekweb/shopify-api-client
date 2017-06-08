@@ -13,7 +13,9 @@ var ShopifyClient = new shopifyClient({
 
 function multipleShopifyCalls(numberOfCalls) {
     for (var i = 0; i < numberOfCalls; i++) {
-        ShopifyClient.getShop();
+        setTimeout(function () {
+            ShopifyClient.getShop()
+        }, 100 * i)
     }
 }
 

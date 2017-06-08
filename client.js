@@ -27,6 +27,8 @@ function accessProperty(property) {
     };
 }
 
+
+
 module.exports = class ShopifyClient {
     constructor(options) {
         CheckOptions(options, ['hostname', 'accessToken']);
@@ -61,37 +63,37 @@ module.exports = class ShopifyClient {
             requestOptions.qs = data;
         }
 
+      
+        return got(url, requestOptions)
+            .then(response => {
+                //console.log(response.body, "the got response")
+                debug(response.requestUrl);
 
-            return got(url, requestOptions)
-                .then(response => {
-                    debug(response.requestUrl);
+                //console.log(response.statusCode);
+                console.log(response.headers['x-shopify-shop-api-call-limit'])
+                var callLimit = response.headers['x-shopify-shop-api-call-limit'];
 
-                    //console.log(response.statusCode);
-                    console.log(response.headers['x-shopify-shop-api-call-limit'])
-                    var callLimit = response.headers['x-shopify-shop-api-call-limit'];
-                    if (callLimit) {
-                        callLimit = parseInt(callLimit.split('/'));
+                   
+                if (callLimit) {
+                    callLimit = parseInt(callLimit.split('/'));
 
-                        //if (callLimit >= 39 || response.statusCode == 429) {
-                        //    setTimeout(function () { console.log("call limit exceeded, waiting half a second") }, 500);
-                        //}
+                    if (callLimit >= 39) {
+                        setTimeout(function () {
+                            console.log("call limit exceeded, waiting half a second") 
+                        }, 500);
                     }
 
                     debug('Call Limit: ' + callLimit);
+                   
+                }
 
-                    return response.body
+                return response.body
 
-                })
-                .catch(error => {
-                    if (error.response.statusCode === 429) {
-                        setTimeout(function () { console.log("call limit exceeded, waiting half a second") }, 500);
-                        console.log(error.response.body, "call limit exceeded");
-                    }
-                    else {
-                        console.log(error.response.body)
-                    }
-                    //=> 'Internal server error ...'
-                });
+            })
+            .catch(error => {
+                console.log(error.response.body)
+                
+            });
 
 
         
