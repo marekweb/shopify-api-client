@@ -19,7 +19,7 @@ var debug = require('debug')('shopify-client');
 // Utility function to get a particular property, used with .then()
 function accessProperty(property) {
     return function (object) {
-        console.log(object, "little object")
+        //console.log(object)
         if (!Object.prototype.hasOwnProperty.call(object, property)) {
             throw new Error(`No such property to access: ${property}, only: ${Object.keys(object)}`);
         }
@@ -61,17 +61,40 @@ module.exports = class ShopifyClient {
             requestOptions.qs = data;
         }
 
-        return got(url, requestOptions)
-            .then(response => {
-                //console.log(response.requestUrl, "the response request");
-                debug(response.requestUrl);
-                return response.body
-                //=> '<!doctype html> ...'
-            })
-            .catch(error => {
-                console.log(error.response.body);
-                //=> 'Internal server error ...'
-            });
+
+            return got(url, requestOptions)
+                .then(response => {
+                    debug(response.requestUrl);
+
+                    //console.log(response.statusCode);
+                    console.log(response.headers['x-shopify-shop-api-call-limit'])
+                    var callLimit = response.headers['x-shopify-shop-api-call-limit'];
+                    if (callLimit) {
+                        callLimit = parseInt(callLimit.split('/'));
+
+                        //if (callLimit >= 39 || response.statusCode == 429) {
+                        //    setTimeout(function () { console.log("call limit exceeded, waiting half a second") }, 500);
+                        //}
+                    }
+
+                    debug('Call Limit: ' + callLimit);
+
+                    return response.body
+
+                })
+                .catch(error => {
+                    if (error.response.statusCode === 429) {
+                        setTimeout(function () { console.log("call limit exceeded, waiting half a second") }, 500);
+                        console.log(error.response.body, "call limit exceeded");
+                    }
+                    else {
+                        console.log(error.response.body)
+                    }
+                    //=> 'Internal server error ...'
+                });
+
+
+        
 
         //return request(requestOptions).then(response => {
         //    // debug(response.request.uri.href);

@@ -9,4 +9,12 @@ var ShopifyClient = new shopifyClient({
     'accessToken': process.env.SHOPIFY_ACCESS_TOKEN
     });
 
-ShopifyClient.getShop();
+//ShopifyClient.getShop();
+
+function multipleShopifyCalls(numberOfCalls) {
+    for (var i = 0; i < numberOfCalls; i++) {
+        ShopifyClient.getShop();
+    }
+}
+
+multipleShopifyCalls(41);
