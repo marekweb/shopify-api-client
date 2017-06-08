@@ -13,7 +13,7 @@
 var Promise = require('bluebird');
 const got = require('got');
 var CheckOptions = require('check-options');
-
+var Promise = require("bluebird");
 var debug = require('debug')('shopify-client');
 
 // Utility function to get a particular property, used with .then()
@@ -26,7 +26,6 @@ function accessProperty(property) {
         return object[property];
     };
 }
-
 
 
 module.exports = class ShopifyClient {
@@ -63,8 +62,19 @@ module.exports = class ShopifyClient {
             requestOptions.qs = data;
         }
 
-      
-        return got(url, requestOptions)
+        function delay(t) {
+            return new Promise(function (resolve) {
+                setTimeout(resolve, t)
+            });
+        }
+
+        //amount of milliseconds to delay promise chain
+        var delayMilliSecs = 0;
+
+        Promise.delay(0)
+            .then(() => {
+                return got(url, requestOptions)
+            })
             .then(response => {
                 //console.log(response.body, "the got response")
                 debug(response.requestUrl);
@@ -73,26 +83,29 @@ module.exports = class ShopifyClient {
                 console.log(response.headers['x-shopify-shop-api-call-limit'])
                 var callLimit = response.headers['x-shopify-shop-api-call-limit'];
 
-                   
+
                 if (callLimit) {
                     callLimit = parseInt(callLimit.split('/'));
 
-                    if (callLimit >= 39) {
-                        setTimeout(function () {
-                            console.log("call limit exceeded, waiting half a second") 
-                        }, 500);
+                    if (callLimit >= 40) {
+                        delayMilliSecs = Math.floor(Math.random() * (2000 - 500 + 1) + 500);
                     }
-
-                    debug('Call Limit: ' + callLimit);
-                   
                 }
 
-                return response.body
+                debug('Call Limit: ' + callLimit);
+                console.log(callLimit, delayMilliSecs)
 
+
+                return response.body;
+
+            })
+            .delay(delayMilliSecs)
+            .then(res => {
+                //console.log(res, "response")
+                return res;
             })
             .catch(error => {
                 console.log(error.response.body)
-                
             });
 
 
@@ -110,11 +123,13 @@ module.exports = class ShopifyClient {
         //});
     }
 
+    
+
     getShop() {
-        return this.makeRequest('get', 'shop.json').then(accessProperty('shop')).catch(error => {
-            console.log(error);
-            //=> 'Internal server error ...'
-        });
+        return this.makeRequest('get', 'shop.json')//.then(accessProperty('shop')).catch(error => {
+        //    console.log(error);
+        //    //=> 'Internal server error ...'
+        //});
     }
 
 

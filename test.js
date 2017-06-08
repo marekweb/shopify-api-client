@@ -13,10 +13,11 @@ var ShopifyClient = new shopifyClient({
 
 function multipleShopifyCalls(numberOfCalls) {
     for (var i = 0; i < numberOfCalls; i++) {
-        setTimeout(function () {
-            ShopifyClient.getShop()
-        }, 100 * i)
+        //setTimeout(function () {
+        //    ShopifyClient.getShop()
+        //}, 100 * i)
+        ShopifyClient.getShop();
     }
 }
 
-multipleShopifyCalls(41);
+multipleShopifyCalls(10);
