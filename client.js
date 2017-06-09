@@ -21,26 +21,25 @@ function accessProperty(property) {
     return function (object) {
         console.log(object, "response object")
 
-        if (property.delete === "productDelete") {
-            //since the delete object is empty, we need to return the property object
-            //that contains the id of the deleted product
-            return property;
-        }
 
-        else if (!Object.prototype.hasOwnProperty.call(object, property)) {
+        if (!Object.prototype.hasOwnProperty.call(object, property)) {
             throw new Error(`No such property to access: ${property}, only: ${Object.keys(object)}`);
             return object[property];
         }
         
-        else {
-            return object[property];
-        }
-            //return object[property];
+
+        return object[property];
  
         
     };
 }
 
+function deletedProductId(id) {
+    return function (object) {
+        console.log(object, "delete object is empty");
+        return id;
+    }
+}
 
 module.exports = class ShopifyClient {
     constructor(options) {
@@ -167,8 +166,8 @@ module.exports = class ShopifyClient {
     }
 
     deleteProduct(id) {
-        return this.makeRequest('delete', `products/${id}.json`).then(accessProperty({ delete: 'productDelete', id: id})).catch(error => { console.log(error);});
-    }
+        return this.makeRequest('delete', `products/${id}.json`).then(deletedProductId(id)).catch(error => { console.log(error);});
+    }/*accessProperty({ delete: 'productDelete', id: id})*/
 
     getProductVariant(id) {
         return this.makeRequest('get', `variants/${id}.json`).then(accessProperty('variant')).catch(error => { console.log(error); });

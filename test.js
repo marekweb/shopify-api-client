@@ -44,15 +44,16 @@ function makeAProduct(title, body_html, vendor, product_type) {
 
 //POST product
 ShopifyClient.createProduct(makeAProduct("ESO fancy hats", "Wear a hat vestige!", "the Prophet", "hat"))
-    //Fetch newly created object && show list of other products
-    //GET product
+        //Fetch newly created object && show list of other products
+//GET product
     .then(res => { ShopifyClient.getProducts(); return ShopifyClient.getProduct(res.id) })
-    //Delete newly create object
+//Delete newly create object
         //the delete request returns an empty object
     .then(res => { return ShopifyClient.deleteProduct(res.id) })
-    //Confirm deletion, fetch
+//Confirm deletion, GET product
         //trying to look up the new product results in an error, since it is deleted
-    .then(res => { console.log(res); return ShopifyClient.getProduct(res.id); })
+    .then(res => { console.log(res); return ShopifyClient.getProduct(res); })
+//GET products
         //show list of products, new product is no longer there
     .then(() => { ShopifyClient.getProducts();})
     .catch(err => {
