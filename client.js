@@ -66,7 +66,7 @@ module.exports = class ShopifyClient {
             requestOptions.qs = data;
         }
        
-        
+       console.log(requestOptions.body)
        return got(url, requestOptions)
             .then(response => {
                 //console.log(response.body, "the got response")
@@ -141,36 +141,36 @@ module.exports = class ShopifyClient {
     
 
     getShop() {
-        return this.makeRequestWithRetry('get', 'shop.json').then(accessProperty('shop')).catch(error => {console.log(error);});
+        return this.makeRequestWithRetry('get', 'shop.json').then(accessProperty('shop')).catch(error => {console.log(error.response.body);});
     }
 
 
     getProducts(options) {
-        return this.makeRequest('get', 'products.json', options).then(accessProperty('products'));
+        return this.makeRequest('get', 'products.json', options).then(accessProperty('products')).catch(error => { console.log(error); });
     }
 
     getProduct(id) {
-        return this.makeRequest('get', `products/${id}.json`).then(accessProperty('product'));
+        return this.makeRequest('get', `products/${id}.json`).then(accessProperty('product')).catch(error => { console.log(error); });
     }
 
     createProduct(product) {
-        return this.makeRequest('post', `products.json`, { product }).then(accessProperty('product'));
+        return this.makeRequest('post', `products.json`, { product }).then(accessProperty('product')).catch(error => { console.log(error.response.body); });
     }
 
     updateProduct(id, product) {
-        return this.makeRequest('put', `products/${id}.json`, { product }).then(accessProperty('product'));
+        return this.makeRequest('put', `products/${id}.json`, { product }).then(accessProperty('product')).catch(error => { console.log(error); });
     }
 
     getProductVariant(id) {
-        return this.makeRequest('get', `variants/${id}.json`).then(accessProperty('variant'));
+        return this.makeRequest('get', `variants/${id}.json`).then(accessProperty('variant')).catch(error => { console.log(error); });
     }
 
     updateProductVariant(id, variant) {
-        return this.makeRequest('put', `variants/${id}.json`, { variant }).then(accessProperty('variant'));
+        return this.makeRequest('put', `variants/${id}.json`, { variant }).then(accessProperty('variant')).catch(error => { console.log(error); });
     }
 
     createRecurringApplicationCharge(charge) {
-        return this.makeRequest('post', 'recurring_application_charges.json', charge).then(accessProperty('recurring_application_charge'));
+        return this.makeRequest('post', 'recurring_application_charges.json', charge).then(accessProperty('recurring_application_charge')).catch(error => { console.log(error); });
     }
 
     customizeRecurringApplicationCharge(id, cappedAmount) {

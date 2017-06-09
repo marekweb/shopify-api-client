@@ -28,14 +28,22 @@ function multipleShopifyCalls(numberOfCalls) {
 //multipleShopifyCalls(41);
 
 //GET shop
-ShopifyClient.getShop();
-
-//GET product
-ShopifyClient.getProducts()
+//ShopifyClient.getShop();
 
 //Create an object
+var product = {
+    title: "Burton Custom Freestyle 151",
+    body_html: "<strong>Good snowboard!<\/strong>",
+    vendor: "Burton",
+    product_type: "Snowboard",
+    published: false
+};
+    //POST product
+ShopifyClient.createProduct(product);
 
 //Fetch newly created object
+    //GET product
+//ShopifyClient.getProducts();
 
 //Delete newly create object
 
