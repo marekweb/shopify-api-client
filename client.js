@@ -19,11 +19,21 @@ var debug = require('debug')('shopify-client');
 // Utility function to get a particular property, used with .then()
 function accessProperty(property) {
     return function (object) {
-        console.log(object)
-        if (!Object.prototype.hasOwnProperty.call(object, property)) {
-            throw new Error(`No such property to access: ${property}, only: ${Object.keys(object)}`);
+        console.log(object, "object with property")
+        if (property === "productDelete") {
+            return object;
         }
-        return object[property];
+        else if (!Object.prototype.hasOwnProperty.call(object, property)) {
+            throw new Error(`No such property to access: ${property}, only: ${Object.keys(object)}`);
+            return object[property];
+        }
+        
+        else {
+            return object[property];
+        }
+            //return object[property];
+ 
+        
     };
 }
 
@@ -66,7 +76,7 @@ module.exports = class ShopifyClient {
             requestOptions.qs = data;
         }
        
-       console.log(requestOptions.body)
+       //console.log(requestOptions.body)
        return got(url, requestOptions)
             .then(response => {
                 //console.log(response.body, "the got response")
@@ -159,6 +169,10 @@ module.exports = class ShopifyClient {
 
     updateProduct(id, product) {
         return this.makeRequest('put', `products/${id}.json`, { product }).then(accessProperty('product')).catch(error => { console.log(error); });
+    }
+
+    deleteProduct(id) {
+        return this.makeRequest('delete', `products/${id}.json`).then(accessProperty('productDelete')).catch(error => { console.log(error); });
     }
 
     getProductVariant(id) {

@@ -31,20 +31,33 @@ function multipleShopifyCalls(numberOfCalls) {
 //ShopifyClient.getShop();
 
 //Create an object
-var product = {
-    title: "Burton Custom Freestyle 151",
-    body_html: "<strong>Good snowboard!<\/strong>",
-    vendor: "Burton",
-    product_type: "Snowboard",
-    published: false
+function makeAProduct(title, body_html, vendor, product_type) {
+    var product = {
+        title: title,
+        body_html: body_html,
+        vendor: vendor,
+        product_type: product_type,
+        published: false
+    };
+    return product
 };
-    //POST product
-ShopifyClient.createProduct(product);
 
-//Fetch newly created object
+//POST product
+
+ShopifyClient.createProduct(makeAProduct("ESO fancy hats", "Wear a hat vestige!", "the Prophet", "hat"))
+    //Fetch newly created object
     //GET product
+    //.then(res => { console.log(res.id, "post product id"); return ShopifyClient.getProduct(res.id) })
+    //.then(res => { console.log(res.id, "get product id"); ShopifyClient.deleteProduct(res.id); return res.id })
+    //.then(res => { console.log(res, "id of deleted product"); ShopifyClient.getProducts(); ShopifyClient.getProduct(res) })
+    //.catch(err => {
+    //    console.log(err)
+    //})
+
+
 //ShopifyClient.getProducts();
 
 //Delete newly create object
+ShopifyClient.deleteProduct(9679840897).then(() => { ShopifyClient.getProducts() })
 
 //Confirm deletion, fetch
