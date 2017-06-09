@@ -107,15 +107,6 @@ module.exports = class ShopifyClient {
                 //return Promise.delay(delayMilliSecs).then(() => { return response.body})
 
             })
-            //.then(res => {
-            //    //console.log(res, "response")
-            //    return res;
-            //})
-            
-            
-
-
-        
 
         //return request(requestOptions).then(response => {
         //    // debug(response.request.uri.href);
