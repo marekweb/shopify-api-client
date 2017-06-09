@@ -43,21 +43,32 @@ function makeAProduct(title, body_html, vendor, product_type) {
 };
 
 //POST product
-
 ShopifyClient.createProduct(makeAProduct("ESO fancy hats", "Wear a hat vestige!", "the Prophet", "hat"))
-    //Fetch newly created object
+    //Fetch newly created object && show list of other products
     //GET product
-    //.then(res => { console.log(res.id, "post product id"); return ShopifyClient.getProduct(res.id) })
-    //.then(res => { console.log(res.id, "get product id"); ShopifyClient.deleteProduct(res.id); return res.id })
-    //.then(res => { console.log(res, "id of deleted product"); ShopifyClient.getProducts(); ShopifyClient.getProduct(res) })
-    //.catch(err => {
-    //    console.log(err)
-    //})
+    .then(res => { ShopifyClient.getProducts(); return ShopifyClient.getProduct(res.id) })
+    //Delete newly create object
+    .then(res => { return ShopifyClient.deleteProduct(res.id) })
+    //Confirm deletion, fetch
+        //show list of products, new product is no longer there
+        //trying to look up the new product results in an error, since it is deleted
+        //the delete request returns an empty object
+    .then(res => { console.log(res); ShopifyClient.getProducts(); })
+    .catch(err => {
+        console.log(err)
+    })
 
 
 //ShopifyClient.getProducts();
 
-//Delete newly create object
-ShopifyClient.deleteProduct(9679840897).then(() => { ShopifyClient.getProducts() })
 
-//Confirm deletion, fetch
+function massiveDeleteWithIds(arrayOfIds) {
+    arrayOfIds.map(function (id) {
+        ShopifyClient.deleteProduct(id)
+    })
+}
+
+
+
+
+

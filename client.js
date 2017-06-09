@@ -19,10 +19,14 @@ var debug = require('debug')('shopify-client');
 // Utility function to get a particular property, used with .then()
 function accessProperty(property) {
     return function (object) {
-        console.log(object, "object with property")
-        if (property === "productDelete") {
-            return object;
+        console.log(object, "object")
+
+        if (property.delete === "productDelete") {
+            //since the delete object is empty, we need to return the property object
+            //that contains the id of the deleted product
+            return property;
         }
+
         else if (!Object.prototype.hasOwnProperty.call(object, property)) {
             throw new Error(`No such property to access: ${property}, only: ${Object.keys(object)}`);
             return object[property];
@@ -172,7 +176,7 @@ module.exports = class ShopifyClient {
     }
 
     deleteProduct(id) {
-        return this.makeRequest('delete', `products/${id}.json`).then(accessProperty('productDelete')).catch(error => { console.log(error); });
+        return this.makeRequest('delete', `products/${id}.json`).then(accessProperty({ delete: 'productDelete', id: id})).catch(error => { console.log(error); if (err.response.status === 404) { console.log(error, "Product does not exist") } });
     }
 
     getProductVariant(id) {
