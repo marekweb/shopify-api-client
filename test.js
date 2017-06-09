@@ -48,19 +48,16 @@ ShopifyClient.createProduct(makeAProduct("ESO fancy hats", "Wear a hat vestige!"
     //GET product
     .then(res => { ShopifyClient.getProducts(); return ShopifyClient.getProduct(res.id) })
     //Delete newly create object
+        //the delete request returns an empty object
     .then(res => { return ShopifyClient.deleteProduct(res.id) })
     //Confirm deletion, fetch
-        //show list of products, new product is no longer there
         //trying to look up the new product results in an error, since it is deleted
-        //the delete request returns an empty object
-    .then(res => { console.log(res); ShopifyClient.getProducts(); })
+    .then(res => { console.log(res); return ShopifyClient.getProduct(res.id); })
+        //show list of products, new product is no longer there
+    .then(() => { ShopifyClient.getProducts();})
     .catch(err => {
         console.log(err)
     })
-
-
-//ShopifyClient.getProducts();
-
 
 function massiveDeleteWithIds(arrayOfIds) {
     arrayOfIds.map(function (id) {

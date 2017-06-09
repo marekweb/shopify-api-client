@@ -19,7 +19,7 @@ var debug = require('debug')('shopify-client');
 // Utility function to get a particular property, used with .then()
 function accessProperty(property) {
     return function (object) {
-        console.log(object, "object")
+        console.log(object, "response object")
 
         if (property.delete === "productDelete") {
             //since the delete object is empty, we need to return the property object
@@ -164,7 +164,7 @@ module.exports = class ShopifyClient {
     }
 
     getProduct(id) {
-        return this.makeRequest('get', `products/${id}.json`).then(accessProperty('product')).catch(error => { console.log(error); });
+        return this.makeRequest('get', `products/${id}.json`).then(accessProperty('product')).catch(error => { if (error.response.statusCode === 404) { console.log(error.statusMessage, "Product does not exist") } else { console.log(error, "product error");  } });
     }
 
     createProduct(product) {
@@ -176,7 +176,7 @@ module.exports = class ShopifyClient {
     }
 
     deleteProduct(id) {
-        return this.makeRequest('delete', `products/${id}.json`).then(accessProperty({ delete: 'productDelete', id: id})).catch(error => { console.log(error); if (err.response.status === 404) { console.log(error, "Product does not exist") } });
+        return this.makeRequest('delete', `products/${id}.json`).then(accessProperty({ delete: 'productDelete', id: id})).catch(error => { console.log(error);});
     }
 
     getProductVariant(id) {
