@@ -19,7 +19,7 @@ var debug = require('debug')('shopify-client');
 // Utility function to get a particular property, used with .then()
 function accessProperty(property) {
     return function (object) {
-        //console.log(object)
+        console.log(object)
         if (!Object.prototype.hasOwnProperty.call(object, property)) {
             throw new Error(`No such property to access: ${property}, only: ${Object.keys(object)}`);
         }
@@ -80,21 +80,23 @@ module.exports = class ShopifyClient {
                 if (callLimit) {
                     callLimit = parseInt(callLimit.split('/'));
 
-                    if (callLimit >= 40) {
-                        delayMilliSecs = 500;
-                    }
+                    //if (callLimit >= 40) {
+                    //    delayMilliSecs = 500;
+                    //}
                 }
 
                 debug('Call Limit: ' + callLimit);
                 console.log(callLimit, delayMilliSecs)
 
-                return Promise.delay(delayMilliSecs).then(() => { return response.body})
+                return response.body
+
+                //return Promise.delay(delayMilliSecs).then(() => { return response.body})
 
             })
-            .then(res => {
-                //console.log(res, "response")
-                return res;
-            })
+            //.then(res => {
+            //    //console.log(res, "response")
+            //    return res;
+            //})
             
             
 
@@ -112,6 +114,11 @@ module.exports = class ShopifyClient {
         //    return response.body;
         //});
     }
+
+    //TODO:
+    //Promise.delay method that takes both the callLimit and response.body from got promise
+    //If callLimit is 40, delay 500ms, if not, delay 0
+    //Then returns the response.body
 
     makeRequestWithRetry(method, path, data = {}) {
         // Create a function that we can call recursively

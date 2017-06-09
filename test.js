@@ -29,3 +29,14 @@ function multipleShopifyCalls(numberOfCalls) {
 
 //GET shop
 ShopifyClient.getShop();
+
+//GET product
+ShopifyClient.getProducts()
+
+//Create an object
+
+//Fetch newly created object
+
+//Delete newly create object
+
+//Confirm deletion, fetch
