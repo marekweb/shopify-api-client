@@ -52,7 +52,6 @@ ShopifyClient.createProduct(makeAProduct("ESO fancy hats", "Wear a hat vestige!"
     .then(res => { return ShopifyClient.deleteProduct(res.id) })
 //Confirm deletion, GET product
         //trying to look up the new product results in an error, since it is deleted
-    .then(res => { console.log(res); return ShopifyClient.getProduct(res); })
 //GET products
         //show list of products, new product is no longer there
     .then(() => { ShopifyClient.getProducts();})

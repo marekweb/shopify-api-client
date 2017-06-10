@@ -6,8 +6,6 @@ const debug = require('debug')('shopify-`client');
 // Utility function to get a particular property, used with .then()
 function accessProperty(property) {
   return function(object) {
-    console.log(object, 'response object');
-
     if (!Object.prototype.hasOwnProperty.call(object, property)) {
       throw new Error(
         `No such property to access: ${property}, only: ${Object.keys(object)}`
@@ -15,13 +13,6 @@ function accessProperty(property) {
     }
 
     return object[property];
-  };
-}
-
-function deletedProductId(id) {
-  return function(object) {
-    console.log(object, 'delete object is empty');
-    return id;
   };
 }
 
@@ -42,33 +33,24 @@ module.exports = class ShopifyClient {
 
     debug(`${method} ${url}`);
 
-    //amount of milliseconds to delay promise chain
-    const delayMilliSecs = 0;
-
     const requestOptions = {
       method: method,
-      //url: url,
       headers: {
-        'Content-Type': 'application/json',
         'X-Shopify-Access-Token': this.accessToken
       },
       json: true,
-      resolveWithFullResponse: true
+      timeout: 10000
     };
 
-    if (method === 'POST' || method === 'PUT') {
-      requestOptions.body = data;
+    if (method === 'GET') {
+      requestOptions.query = data;
     } else {
-      requestOptions.qs = data;
+      requestOptions.body = data;
     }
 
-    //console.log(requestOptions.body)
     return got(url, requestOptions).then(response => {
-      //console.log(response.body, "the got response")
-      debug(response.requestUrl);
+      debug(`${response.statusCode} ${response.requestUrl}`);
 
-      //console.log(response.statusCode);
-      console.log(response.headers['x-shopify-shop-api-call-limit']);
       let callLimit = response.headers['x-shopify-shop-api-call-limit'];
 
       if (callLimit) {
@@ -106,18 +88,16 @@ module.exports = class ShopifyClient {
 
   makeRequestWithRetry(method, path, data = {}) {
     // Create a function that we can call recursively
-    //console.log(this.makeRequest)
     const tryRequest = () => {
-      //console.log(that.makeRequest)
       return this.makeRequest(method, path, (data = {})).catch(err => {
         if (err.response.statusCode === 429) {
           return Promise.delay(500).then(tryRequest);
         }
-        throw err; // If it's not 429 then propagate the error
+        throw err;
       });
     }
 
-    // Start the attempt
+
     return tryRequest();
   }
 
@@ -168,7 +148,6 @@ module.exports = class ShopifyClient {
 
   deleteProduct(id) {
     return this.makeRequest('delete', `products/${id}.json`)
-      .then(deletedProductId(id))
       .catch(error => {
         console.log(error);
       });
