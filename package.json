@@ -4,6 +4,7 @@
   "description": "",
   "main": "client.js",
   "scripts": {
+    "format": "prettier --write --single-quote client.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -11,7 +12,7 @@
     "url": "git+https://github.com/marekweb/shopify-api-client.git"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/marekweb/shopify-api-client/issues"
   },
@@ -20,8 +21,11 @@
     "bluebird": "^3.5.0",
     "check-options": "^1.1.0",
     "debug": "^2.6.8",
-    "dotenv": "^4.0.0",
     "got": "^7.0.0",
     "limiter": "^1.1.0"
+  },
+  "devDependencies": {
+    "dotenv": "^4.0.0",
+    "prettier": "^1.4.4"
   }
 }
