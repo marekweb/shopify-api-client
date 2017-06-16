@@ -1,7 +1,7 @@
 const got = require('got');
 const checkOptions = require('check-options');
 const Promise = require('bluebird');
-const debug = require('debug')('shopify-`client');
+const debug = require('debug')('shopify-api-client');
 
 // Utility function to get a particular property, used with .then()
 function accessProperty(property) {
@@ -111,8 +111,10 @@ module.exports = class ShopifyClient {
         code: code
       }
     };
-
-    return got(url, requestOptions).then(response => response.access_token);
+    debug('POST', url);
+    return got(url, requestOptions).then(
+      response => response.body.access_token
+    );
   }
 
   getShop() {
