@@ -21,8 +21,7 @@
     "bluebird": "^3.5.0",
     "check-options": "^1.1.0",
     "debug": "^2.6.8",
-    "got": "^7.0.0",
-    "limiter": "^1.1.0"
+    "got": "^7.0.0"
   },
   "devDependencies": {
     "dotenv": "^4.0.0",
