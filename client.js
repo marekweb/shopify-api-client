@@ -102,10 +102,10 @@ module.exports = class ShopifyClient {
   }
 
   obtainOauthAccessToken(options = {}) {
-      checkOptions(options, 'clientId', 'clientSecret', 'hostname', 'code');
-      const { clientId, clientSecret, hostname, code } = options;
+      checkOptions(options, 'clientId', 'clientSecret', 'code');
+      const { clientId, clientSecret, code } = options;
 
-      let url = `https://${hostname}/admin/oauth/access_token`;
+      let url = `https://${this.hostname}/admin/oauth/access_token`;
       const requestOptions = {
             method: 'post',
             json: true,
