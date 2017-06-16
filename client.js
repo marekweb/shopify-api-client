@@ -101,15 +101,12 @@ module.exports = class ShopifyClient {
     return tryRequest();
   }
 
-  obtainOauthAccessToken(options = {}) {
-      checkOptions(options, 'clientId', 'clientSecret', 'code');
-      const { clientId, clientSecret, code } = options;
-
-      let url = `https://${this.hostname}/admin/oauth/access_token`;
+  static obtainOauthAccessToken(clientId, clientSecret, hostname, code) {
+      let url = `https://${hostname}/admin/oauth/access_token`;
       const requestOptions = {
             method: 'post',
             json: true,
-            form: {
+            body: {
                 client_id: clientId,
                 client_secret: clientSecret,
                 code: code
@@ -117,11 +114,7 @@ module.exports = class ShopifyClient {
       };
 
       return got(url, requestOptions)
-          .then(response => response.access_token)
-          .catch(error => {
-              console.log(error);
-          });
-      
+          .then(response => response.access_token)      
   };
 
   getShop() {
