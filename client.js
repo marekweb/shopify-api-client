@@ -101,6 +101,29 @@ module.exports = class ShopifyClient {
     return tryRequest();
   }
 
+  obtainOauthAccessToken(options = {}) {
+      checkOptions(options, 'clientId', 'clientSecret', 'hostname', 'code');
+      const { clientId, clientSecret, hostname, code } = options;
+
+      let url = `https://${hostname}/admin/oauth/access_token`;
+      const requestOptions = {
+            method: 'post',
+            json: true,
+            form: {
+                client_id: clientId,
+                client_secret: clientSecret,
+                code: code
+            }
+      };
+
+      return got(url, requestOptions)
+          .then(response => response.access_token)
+          .catch(error => {
+              console.log(error);
+          });
+      
+  };
+
   getShop() {
     return this.makeRequestWithRetry('get', 'shop.json')
       .then(accessProperty('shop'))
