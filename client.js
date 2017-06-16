@@ -62,7 +62,6 @@ module.exports = class ShopifyClient {
       }
 
       debug('Call Limit: ' + callLimit);
-      console.log(callLimit, delayMilliSecs);
 
       return response.body;
 
@@ -90,6 +89,7 @@ module.exports = class ShopifyClient {
     // Create a function that we can call recursively
     const tryRequest = () => {
       return this.makeRequest(method, path, (data = {})).catch(err => {
+        console.log(err);
         if (err.response.statusCode === 429) {
           return Promise.delay(500).then(tryRequest);
         }
@@ -120,9 +120,6 @@ module.exports = class ShopifyClient {
   getShop() {
     return this.makeRequestWithRetry('get', 'shop.json')
       .then(accessProperty('shop'))
-      .catch(error => {
-        console.log(error.response.body);
-      });
   }
 
   getProducts(options) {
