@@ -95,27 +95,25 @@ module.exports = class ShopifyClient {
         }
         throw err;
       });
-    }
-
+    };
 
     return tryRequest();
   }
 
   static obtainOauthAccessToken(clientId, clientSecret, hostname, code) {
-      let url = `https://${hostname}/admin/oauth/access_token`;
-      const requestOptions = {
-            method: 'post',
-            json: true,
-            body: {
-                client_id: clientId,
-                client_secret: clientSecret,
-                code: code
-            }
-      };
+    let url = `https://${hostname}/admin/oauth/access_token`;
+    const requestOptions = {
+      method: 'post',
+      json: true,
+      body: {
+        client_id: clientId,
+        client_secret: clientSecret,
+        code: code
+      }
+    };
 
-      return got(url, requestOptions)
-          .then(response => response.access_token)      
-  };
+    return got(url, requestOptions).then(response => response.access_token);
+  }
 
   getShop() {
     return this.makeRequestWithRetry('get', 'shop.json')
@@ -163,10 +161,9 @@ module.exports = class ShopifyClient {
   }
 
   deleteProduct(id) {
-    return this.makeRequest('delete', `products/${id}.json`)
-      .catch(error => {
-        console.log(error);
-      });
+    return this.makeRequest('delete', `products/${id}.json`).catch(error => {
+      console.log(error);
+    });
   }
 
   getProductVariant(id) {
