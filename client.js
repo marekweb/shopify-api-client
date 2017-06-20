@@ -1,3 +1,4 @@
+const { differenceWith } = require('lodash');
 const got = require('got');
 const checkOptions = require('check-options');
 const Promise = require('bluebird');
@@ -118,8 +119,9 @@ module.exports = class ShopifyClient {
   }
 
   getShop() {
-    return this.makeRequestWithRetry('get', 'shop.json')
-      .then(accessProperty('shop'))
+    return this.makeRequestWithRetry('get', 'shop.json').then(
+      accessProperty('shop')
+    );
   }
 
   getProducts(options) {
@@ -291,15 +293,8 @@ module.exports = class ShopifyClient {
     );
   }
 
-  createWebhook(topic, address) {
-    const requestData = {
-      webhook: {
-        topic: topic,
-        address: address,
-        format: 'json'
-      }
-    };
-    return this.makeRequest('post', 'webhooks.json', requestData);
+  createWebhook(webhook) {
+    return this.makeRequest('post', 'webhooks.json', { webhook });
   }
 
   deleteWebhook(id) {
@@ -308,21 +303,40 @@ module.exports = class ShopifyClient {
   }
 
   deleteAllWebhooks() {
-    const _this = this;
-    const deletionPromises = this.getWebhooks().map(function(webhook) {
-      return _this.deleteWebhook(webhook.id);
+    const deletionPromises = this.getWebhooks().then(webhooks => {
+      return Promise.map(webhooks, webhook => {
+        return this.deleteWebhook(webhook.id);
+      });
     });
-
-    return Promise.all(deletionPromises);
+    return deletionPromises;
   }
 
+  /**
+   *
+   * @param {Array.<{topic: string, address: string}>} desiredWebhooks
+   * @return {Promise<{creations: Array, deletions: Array}>}
+   */
   setWebhooks(desiredWebhooks) {
-    return this.deleteAllWebhooks().then(() => {
-      const creationPromises = desiredWebhooks.map(webhook => {
-        return this.createWebhook(webhook.topic, webhook.address);
-      });
+    return this.getWebhooks().then(webhooks => {
+      const webhooksToBeDeleted = differenceWith(
+        webhooks,
+        desiredWebhooks,
+        compareWebhooks
+      );
+      const webhooksToBeCreated = differenceWith(
+        desiredWebhooks,
+        webhooks,
+        compareWebhooks
+      );
 
-      return Promise.all(creationPromises);
+      return Promise.props({
+        creations: Promise.map(webhooksToBeCreated, webhook =>
+          this.createWebhook(webhook)
+        ),
+        deletions: Promise.map(webhooksToBeDeleted, webhook =>
+          this.deleteWebhook(webhook.id)
+        )
+      });
     });
   }
 
@@ -331,17 +345,12 @@ module.exports = class ShopifyClient {
   }
 
   getOrders(fields) {
-    // TODO make this return only what's necessary
-    const requestData = {
-      limit: 250,
-      // fields: 'financial_status,total_price,currency', // TODO line_items
-      // 'created_at_min': '2016-08-01T00:00-4:00',
-      status: 'any'
-    };
-
-    Object.assign(requestData, fields);
-    return this.makeRequest('get', 'orders.json', requestData).then(
+    return this.makeRequest('get', 'orders.json', fields).then(
       accessProperty('orders')
     );
   }
 };
+
+function compareWebhooks(a, b) {
+  return a.topic === b.topic && a.address === b.address;
+}
