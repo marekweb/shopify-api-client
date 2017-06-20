@@ -1,4 +1,4 @@
-const { differenceWith } = require('lodash');
+const { get, differenceWith } = require('lodash');
 const got = require('got');
 const checkOptions = require('check-options');
 const Promise = require('bluebird');
@@ -90,8 +90,11 @@ module.exports = class ShopifyClient {
     // Create a function that we can call recursively
     const tryRequest = () => {
       return this.makeRequest(method, path, (data = {})).catch(err => {
-        console.log(err);
-        if (err.response.statusCode === 429) {
+        const statusCode = get(err, 'response.statusCode');
+        if (statusCode) {
+          debug(`${statusCode} ${response.requestUrl}`);
+        }
+        if (statusCode === 429) {
           return Promise.delay(500).then(tryRequest);
         }
         throw err;
