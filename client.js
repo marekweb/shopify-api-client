@@ -128,62 +128,43 @@ module.exports = class ShopifyClient {
   }
 
   getProducts(options) {
-    return this.makeRequest('get', 'products.json', options)
-      .then(accessProperty('products'))
-      .catch(error => {
-        console.log(error);
-      });
+    return this.makeRequest('get', 'products.json', options).then(
+      accessProperty('products')
+    );
   }
 
   getProduct(id) {
-    return this.makeRequest('get', `products/${id}.json`)
-      .then(accessProperty('product'))
-      .catch(error => {
-        if (error.response.statusCode === 404) {
-          console.log(error.statusMessage, 'Product does not exist');
-        } else {
-          console.log(error, 'product error');
-        }
-      });
+    return this.makeRequest('get', `products/${id}.json`).then(
+      accessProperty('product')
+    );
   }
 
   createProduct(product) {
-    return this.makeRequest('post', `products.json`, { product })
-      .then(accessProperty('product'))
-      .catch(error => {
-        console.log(error);
-        console.log(error.response.body);
-      });
+    return this.makeRequest('post', `products.json`, { product }).then(
+      accessProperty('product')
+    );
   }
 
   updateProduct(id, product) {
-    return this.makeRequest('put', `products/${id}.json`, { product })
-      .then(accessProperty('product'))
-      .catch(error => {
-        console.log(error);
-      });
+    return this.makeRequest('put', `products/${id}.json`, { product }).then(
+      accessProperty('product')
+    );
   }
 
   deleteProduct(id) {
-    return this.makeRequest('delete', `products/${id}.json`).catch(error => {
-      console.log(error);
-    });
+    return this.makeRequest('delete', `products/${id}.json`);
   }
 
   getProductVariant(id) {
-    return this.makeRequest('get', `variants/${id}.json`)
-      .then(accessProperty('variant'))
-      .catch(error => {
-        console.log(error);
-      });
+    return this.makeRequest('get', `variants/${id}.json`).then(
+      accessProperty('variant')
+    );
   }
 
   updateProductVariant(id, variant) {
-    return this.makeRequest('put', `variants/${id}.json`, { variant })
-      .then(accessProperty('variant'))
-      .catch(error => {
-        console.log(error);
-      });
+    return this.makeRequest('put', `variants/${id}.json`, { variant }).then(
+      accessProperty('variant')
+    );
   }
 
   createRecurringApplicationCharge(charge) {
@@ -191,11 +172,7 @@ module.exports = class ShopifyClient {
       'post',
       'recurring_application_charges.json',
       charge
-    )
-      .then(accessProperty('recurring_application_charge'))
-      .catch(error => {
-        console.log(error);
-      });
+    ).then(accessProperty('recurring_application_charge'));
   }
 
   customizeRecurringApplicationCharge(id, cappedAmount) {
