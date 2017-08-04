@@ -56,35 +56,13 @@ module.exports = class ShopifyClient {
 
       if (callLimit) {
         callLimit = parseInt(callLimit.split('/'));
-
-        //if (callLimit >= 40) {
-        //    delayMilliSecs = 500;
-        //}
       }
 
       debug('Call Limit: ' + callLimit);
 
       return response.body;
-
-      //return Promise.delay(delayMilliSecs).then(() => { return response.body})
     });
-
-    //return request(requestOptions).then(response => {
-    //    // debug(response.request.uri.href);
-
-    //    const callLimit = response.headers['x-shopify-shop-api-call-limit'];
-    //    if (callLimit) {
-    //        callLimit = parseInt(callLimit.split('/'));
-    //    }
-    //    debug('Call Limit: ' + callLimit);
-    //    return response.body;
-    //});
   }
-
-  //TODO:
-  //Promise.delay method that takes both the callLimit and response.body from got promise
-  //If callLimit is 40, delay 500ms, if not, delay 0
-  //Then returns the response.body
 
   makeRequestWithRetry(method, path, data = {}) {
     // Create a function that we can call recursively
