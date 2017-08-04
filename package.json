@@ -21,11 +21,11 @@
     "bluebird": "^3.5.0",
     "check-options": "^1.1.0",
     "debug": "^2.6.8",
-    "got": "^7.0.0",
+    "got": "^7.1.0",
     "lodash": "^4.17.4"
   },
   "devDependencies": {
     "dotenv": "^4.0.0",
-    "prettier": "^1.4.4"
+    "prettier": "^1.5.3"
   }
 }
