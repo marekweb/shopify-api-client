@@ -4,8 +4,7 @@
   "description": "",
   "main": "client.js",
   "scripts": {
-    "format": "prettier --write --single-quote client.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "format": "prettier --write --single-quote client.js"
   },
   "repository": {
     "type": "git",
